@@ -13,7 +13,7 @@
 
 // TODO: Adjust the struct as described above.
 struct ReportCard {
-    grade: f32,
+    grade: Repvalue<f32, &str>,
     student_name: String,
     student_age: u8,
 }
