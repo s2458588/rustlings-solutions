@@ -1,3 +1,5 @@
+use std::{array::IntoIter, collections::{linked_list::{self, Iter}, LinkedList}, iter};
+
 fn factorial(num: u64) -> u64 {
     // TODO: Complete this function to return the factorial of `num` which is
     // defined as `1 * 2 * 3 * … * num`.
@@ -10,6 +12,9 @@ fn factorial(num: u64) -> u64 {
     // - additional variables
     // For an extra challenge, don't use:
     // - recursion
+    if num == 0 {return 1};
+    LinkedList::new().extend(num..0);
+
 }
 
 fn main() {
