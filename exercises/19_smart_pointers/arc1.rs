@@ -17,7 +17,6 @@
 
 // Don't change the lines below.
 #![forbid(unused_imports)]
-use core::num;
 use std::{sync::Arc, thread};
 
 fn main() {
