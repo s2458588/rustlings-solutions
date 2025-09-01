@@ -3,7 +3,8 @@
 // You can read more about it in the documentation:
 // https://doc.rust-lang.org/std/convert/trait.From.html
 
-use core::slice;
+use core::{error, slice};
+use std::num::ParseFloatError;
 
 #[derive(Debug)]
 struct Person {
@@ -37,24 +38,24 @@ impl Default for Person {
 // 6. If parsing the age fails, return the default of `Person`.
 impl From<&str> for Person {
     fn from(s: &str) -> Self {
-
         let sliced: Vec<&str> = s.split(",").collect();
+
         if sliced.len() != 2 {
-            if sliced.2 == "" {
-                Person::default()
-            }
-            else {
-            Self {
-                    name: sliced.0,
-                    age: sliced.1,
-                }
-            }
+            Self::default()
+        }
+        // probably shouldnt use an antipattern here
+        //let checkage = assert_eq!(sliced[1].parse().inspect_err(|e|,), ParseFloatError);
+
+        else if sliced[0].is_empty() || sliced[1].parse::<u8>().is_err() {
+            Self::default()
         }
         else {
-        Person::default()
+            Self {
+                name: sliced[0].to_string(),
+                age: sliced[1].parse::<u8>().unwrap(),
+            }
         }
-        // function body end
-        }
+    }
 }
 
 fn main() {
