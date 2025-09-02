@@ -5,7 +5,7 @@
 // https://doc.rust-lang.org/std/convert/trait.TryFrom.html
 
 #![allow(clippy::useless_vec)]
-use std::convert::{TryFrom, TryInto};
+use std::{convert::{TryFrom, TryInto}, slice::Iter};
 
 #[derive(Debug, PartialEq)]
 struct Color {
@@ -28,14 +28,34 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
 
-    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {}
+    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let u8range = 0..255;
+        if u8range.contains(&tuple.0) || u8range.contains(&tuple.1) ||  u8range.contains(&tuple.2) {
+            Ok(Self {
+                red: u8::try_from(tuple.0).unwrap_or(u8::MAX),
+                green: u8::try_from(tuple.1).unwrap_or(u8::MAX),
+                blue: u8::try_from(tuple.2).unwrap_or(u8::MAX),})
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
+    }
 }
 
 // TODO: Array implementation.
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
+    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let u8range = 0..255;
+        if u8range.contains(&arr[0]) || u8range.contains(&arr[1]) ||  u8range.contains(&arr[2]) {
+        Ok(Self {
+            red: u8::try_from(arr[0]).unwrap_or(u8::MAX),
+            green: u8::try_from(arr[1]).unwrap_or(u8::MAX),
+            blue: u8::try_from(arr[2]).unwrap_or(u8::MAX), })
 
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {}
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
+    }
 }
 
 // TODO: Slice implementation.
@@ -43,7 +63,20 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
 
-    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {}
+    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        let u8range = 0..255;
+        if slice.len() != 3 {
+            Err(IntoColorError::BadLen)
+        }
+        else if u8range.contains(&slice[0]) && u8range.contains(&slice[1]) &&  u8range.contains(&slice[2]) {
+        Ok(Self {
+            red: u8::try_from(slice[0]).unwrap_or(u8::MAX),
+            green: u8::try_from(slice[1]).unwrap_or(u8::MAX),
+            blue: u8::try_from(slice[2]).unwrap_or(u8::MAX), })
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
+    }
 }
 
 fn main() {
